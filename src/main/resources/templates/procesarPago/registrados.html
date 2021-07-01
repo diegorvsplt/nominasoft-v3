@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head th:replace="layouts/fragmentos :: head"></head>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    let periodo = /*[[${periodo}]]*/ "default";
+
+    /*]]>*/
+  </script>
+  <body>
+    <div id="app">
+      <div class="main-wrapper">
+        <span th:replace="layouts/fragmentos :: nav-bar"></span>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <h3 class="text-center mt-3 mb-3">Pagos registrados</h3>
+          <table class="table table-bordered">
+            <thead style="background: #343a40">
+              <tr>
+                <th class="header">Código Empleado</th>
+                <th class="header">Nombre</th>
+                <th class="header">Dni</th>
+                <th class="header">T. horas</th>
+                <th class="header">Valor hora</th>
+                <th class="header">Sueldo</th>
+                <th class="header">T. ingresos</th>
+                <th class="header">T. descuento</th>
+                <th class="header">Sueldo neto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <span th:if="${listaPagos != null}"></span>
+              <tr th:each="item : ${listaPagos}">
+                <td th:text="${item.contrato.empleado.id}"></td>
+                <td th:text="${item.contrato.empleado.nombre}"></td>
+                <td th:text="${item.contrato.empleado.dni}"></td>
+                <td th:text="${item.totalDeHoras}"></td>
+                <td th:text="${item.valorHora}"></td>
+                <td th:text="${item.calcularSueldoBasico()}"></td>
+                <td th:text="${item.calcularTotalIngresos()}"></td>
+                <td th:text="${item.calcularTotalDescuentos()}"></td>
+                <td th:text="${item.calcularSueldoNeto()}"></td>
+              </tr>
+              <tr th:if="${listaPagos == null}">
+                <td colspan="3"><h4>No exiten pagos registrados</h4></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="row text-center">
+            <a
+              th:href="@{/periodo/}"
+              class="btn btn-info"
+              style="background: #f4d35e; margin: auto"
+              ><i class="fas fa-file-alt"></i> Regresar</a
+            >
+          </div>
+        </div>
+
+        <footer
+          th:replace="layouts/fragmentos :: footer"
+          class="main-footer"
+        ></footer>
+      </div>
+    </div>
+
+    <span th:replace="layouts/fragmentos :: js"></span>
+  </body>
+</html>

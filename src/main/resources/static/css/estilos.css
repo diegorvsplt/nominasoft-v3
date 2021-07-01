@@ -1,0 +1,30 @@
+td {
+  text-align: center;
+  height: 60px;
+}
+th {
+  text-align: center;
+  height: 50px;
+}
+.header{
+  color: white;
+}
+
+.button-container{
+  display: flex;
+  justify-content: space-around;
+}
+
+.boton {
+  border: 1px solid white;
+  width: 200px;
+  height: 40px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+  line-height: 20px;
+}
+
+.boton:hover:not([disabled]) {
+  color: white;
+  box-shadow: 5px 7px black;
+}

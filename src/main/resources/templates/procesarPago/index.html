@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head th:replace="layouts/fragmentos :: head"></head>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    let periodo = /*[[${periodo}]]*/ "default";
+    let contratos = /*[[${contratos}]]*/ "default";
+    /*]]>*/
+  </script>
+  <body>
+    <div id="app">
+      <div class="main-wrapper">
+        <span th:replace="layouts/fragmentos :: nav-bar"></span>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <h3 class="text-center mt-3 mb-3">Periodo activo</h3>
+          <table class="table table-bordered">
+            <thead style="background: #343a40">
+              <tr>
+                <th class="header">Código</th>
+                <th class="header">Fecha Inicio</th>
+                <th class="header">Fecha Fin</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${periodo != null}">
+                <td th:text="${periodo.id}"></td>
+                <td th:text="${periodo.fechaInicio}"></td>
+                <td th:text="${periodo.fechaFin}"></td>
+              </tr>
+              <tr th:if="${periodo == null}">
+                <td colspan="3"><h4>No existe periodo activo</h4></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <form th:action="@{/pagos/procesar}" method="POST" id="formProcesar">
+            <div class="text-center">
+              <input type="submit" value = "Procesar" id = "" class="boton" style="background-color: black; color: white"></input>
+            </div>
+          </form>
+          
+        <footer
+          th:replace="layouts/fragmentos :: footer"
+          class="main-footer"
+        ></footer>
+      </div>
+    </div>
+
+    <span th:replace="layouts/fragmentos :: js"></span>
+    <script type="text/javascript" th:src="@{/js/procesarPagos.js}"></script>
+  </body>
+</html>

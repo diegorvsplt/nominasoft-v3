@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html >
+<head th:fragment="head">
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+  <title>NominaSoft</title>
+
+  <!-- General CSS Files -->
+  <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/all.css}">
+  <link rel="shortcut icon" th:href="@{/img/payroll.ico}" type="image/x-icon" />
+  <!-- Template CSS -->
+  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{/css/estilos.css}">
+  
+</head>
+
+<body>
+  <div id="app">
+    <div class="main-wrapper">
+      <div th:fragment="nav-bar">
+        <div class="navbar-bg"></div>
+        <nav class="navbar navbar-expand-lg main-navbar">
+          <form class="form-inline mr-auto">
+            <ul class="navbar-nav mr-3">
+              <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
+            </ul>
+          </form>
+
+          <ul class="navbar-nav navbar-right">
+            <li class="dropdown"><a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
+              <img alt="image" src="/img/avatar/avatar_1.jpg" class="rounded-circle mr-1">
+              <div class="d-sm-none d-lg-inline-block">Hola, Diego</div></a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <div class="dropdown-title">Conectado hace 5minutos</div>
+                <a href="" class="dropdown-item has-icon">
+                  <i class="far fa-user"></i> Perfil
+                </a>
+                <a href="" class="dropdown-item has-icon">
+                  <i class="fas fa-bolt"></i> Actividades
+                </a>
+                <a href="" class="dropdown-item has-icon">
+                  <i class="fas fa-cog"></i> Configuracion
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item has-icon text-danger">
+                  <i class="fas fa-sign-out-alt"></i> Salir
+                </a>
+              </div>
+            </li>
+          </ul>
+        </nav>
+        <div class="main-sidebar">
+          <aside id="sidebar-wrapper">
+            <div class="sidebar-brand">
+              <a th:href="@{/}"><span style="color: #EFCB68">Nomina</span><span style="color: #0E6BA8">Soft</span></a>
+            </div>
+            <div class="sidebar-brand sidebar-brand-sm">
+              <a th:href="@{/}"><span style="color: #EFCB68">N</span><span style="color: #0E6BA8">S</span></a>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-header">Menu</li>
+                
+                <li class="nav-item dropdown">
+                  <a href="#" class="nav-link has-dropdown"><i class="far fa-file-alt"></i> <span>Servicios</span></a>
+                  <ul class="dropdown-menu">
+                    <li><a class="nav-link" th:href="@{/contrato/}">Gestionar contrato</a></li>
+                    <li><a class="nav-link" th:href="@{/pagos/}">Procesar pagos</a></li>
+                  </ul>
+                </li>
+                <li class="nav-item dropdown">
+                  <a href="#" class="nav-link has-dropdown"><i class="fas fa-database"></i> <span>Mantenedores</span></a>
+                  <ul class="dropdown-menu">
+                    <li><a class="nav-link" th:href="@{/empleado/}">Empleados</a></li>
+                    <li><a class="nav-link" th:href="@{/periodo/}">Periodos</a></li>
+                  </ul>
+                </li>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <section class="section">
+        
+          <!--CONTENIDO-->
+
+        </section>
+      </div>
+
+          
+          
+      <footer th:fragment="footer" class="main-footer">
+        <div class="footer-left">
+          Copyright &copy; 2021 <div class="bullet"></div> Diseñado por <a href="https://www.facebook.com/diego.rivasplata/">Goku</a>
+        </div>
+        <div class="footer-right">
+          2.3.0
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <span th:fragment="js">
+      <!-- General JS Scripts -->
+      <script type="text/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+      <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script> 
+      <script type="text/javascript" th:src="@{/js/jquery.nicescroll.min.js}"></script>
+      <script type="text/javascript" th:src="@{/js/formulario.js}"></script>
+      
+    
+      <!-- Template JS File -->
+      <script type="text/javascript" th:src="@{/js/scripts.js}"></script>
+
+
+  </span>
+</body>
+</html>

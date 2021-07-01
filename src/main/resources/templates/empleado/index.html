@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+  <head th:replace="layouts/fragmentos :: head"></head>
+  <body>
+    <div id="app">
+      <div class="main-wrapper">
+        <span th:replace="layouts/fragmentos :: nav-bar"></span>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <div class="card mt-4">
+            <h5 class="card-header">Empleados registrados</h5>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Dni</th>
+                      <th>Nombre</th>
+                      <th>Grado académico</th>
+                      <th>Estado civil</th>
+                      <th>Teléfono</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <span th:if="${!listaEmpleados.isEmpty()}">
+                      <tr th:each="item: ${listaEmpleados}">
+                        <td th:text="${item.dni}"></td>
+                        <td th:text="${item.nombre}"></td>
+                        <td th:text="${item.gradoAcademico}"></td>
+                        <td th:text="${item.estadoCivil}"></td>
+                        <td th:text="${item.telefono}"></td>
+                        <td style="padding-left: 0px; padding-right: 0px">
+                          <div class="button-group button-container">
+                            <a
+                              th:href="@{buscarUno/(id=${item.id})}"
+                              class="btn btn-warning editarEmpleado"
+                              type="button"
+                            >
+                              <i class="fas fa-user-edit"></i> Editar</a
+                            >
+                            <a
+                              th:href="@{eliminar/}+${item.id}"
+                              type="button"
+                              class="btn btn-danger botonEliminar"
+                            >
+                              <i class="fas fa-user-times"></i> Eliminar</a
+                            >
+                            <a
+                              th:href="@{contratos/(id=${item.id})}"
+                              type="button"
+                              class="btn btn-light botonMostrarContratos"
+                            >
+                              <i class="fas fa-file-contract"></i> Contratos</a
+                            >
+                          </div>
+                        </td>
+                      </tr>
+                    </span>
+                    <span th:if="${listaEmpleados.isEmpty()}">
+                      <tr>
+                        <td colspan="7" class="text-center">
+                          <h5>Ningun empleado registrado</h5>
+                        </td>
+                      </tr>
+                    </span>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="text-center">
+                <a href="#" class="btn btn-info agregarEmpleado"
+                  ><i class="fas fa-user-plus"></i> Agregar</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!--MODEL AGREGAR/EDITAR CLIENTE-->
+          <div class="my-form">
+            <div
+              id="agregarEmpleadoModal"
+              class="modal fade"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+              data-backdrop="static"
+            >
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header bg-info text-white" id="modalHeader">
+                    <h5 class="modal-title" id="nombreVentana"></h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <form
+                    method="POST"
+                    th:action="@{/empleado/form}"
+                    th:object="${empleadoDto}"
+                    class="needs-validation"
+                    novalidate
+                  >
+                    <input
+                      type="hidden"
+                      th:field="*{idDto}"
+                      name="id"
+                      id="id"
+                    />
+                    <div class="modal-body" id="modalMensaje">
+                      <div class="form-row">
+                        <div class="col-6 mb-3">
+                          <label>Dni:</label>
+                          <input
+                            th:field="*{dniDto}"
+                            name="dni"
+                            id="dni"
+                            type="text"
+                            class="form-control"
+                            placeholder="Ingrese dni"
+                            minlength="8"
+                            maxlength="8"
+                            required="required"
+                          />
+                          <div class="invalid-feedback">Ingrese el dni</div>
+                        </div>
+
+                        <div class="col-6 mb-3">
+                          <label>Nombre:</label>
+                          <input
+                            th:field="*{nombreDto}"
+                            name="nombre"
+                            id="nombre"
+                            type="text"
+                            class="form-control"
+                            placeholder="Ingrese nombre"
+                            minlength="1"
+                            maxlength="25"
+                            required="required"
+                          />
+                          <div class="invalid-feedback">Ingrese el nombre</div>
+                        </div>
+                      </div>
+
+                      <div class="form-row">
+                        <div class="col-6 mb-3">
+                          <label for="gradoAcademico">Grado académico: </label>
+                          <select
+                            th:field="*{gradoAcademicoDto}"
+                            name="gradoAcademico"
+                            id="gradoAcademico"
+                            class="form-control"
+                          >
+                            <option value="Primaria" selected>Primaria</option>
+                            <option value="Secundaria">Secundaria</option>
+                            <option value="Bachiller">Bachiller</option>
+                            <option value="Profesional">Profesional</option>
+                            <option value="Magister">Magister</option>
+                            <option value="Doctor">Doctor</option>
+                          </select>
+                        </div>
+
+                        <div class="col-6 mb-3">
+                          <label for="estadoCivil">Estado civil: </label>
+                          <select
+                            th:field="*{estadoCivilDto}"
+                            name="estadoCivil"
+                            id="estadoCivil"
+                            class="form-control"
+                          >
+                            <option value="Soltero" selected>Soltero</option>
+                            <option value="Casado">Casado</option>
+                            <option value="Conviviente">Conviviente</option>
+                            <option value="Divorciado">Divorciado</option>
+                            <option value="Viudo">Viudo</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-row">
+                        <div class="col-md-6 mb-3">
+                          <label>Fecha de nacimiento: </label>
+                          <input
+                            th:field="*{fechaNacimientoDto}"
+                            name="fechaNacimiento"
+                            id="fechaNacimiento"
+                            type="date"
+                            class="form-control"
+                            min="1900-01-01"
+                            max="2003-05-21"
+                            required="required"
+                          />
+                          <div class="invalid-feedback">Fecha invalida</div>
+                        </div>
+
+                        <div class="col-6 mb-3">
+                          <label>Teléfono:</label>
+                          <input
+                            th:field="*{telefonoDto}"
+                            name="telefono"
+                            id="telefono"
+                            type="text"
+                            class="form-control"
+                            placeholder="Ingrese telefono"
+                            minlength="6"
+                            maxlength="9"
+                            pattern="[0-9]+"
+                            required="required"
+                          />
+                          <div class="invalid-feedback">
+                            Ingrese el teléfono:
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-row">
+                        <div class="col-6 mb-3">
+                          <label>Dirección:</label>
+                          <input
+                            th:field="*{direccionDto}"
+                            name="direccion"
+                            id="direccion"
+                            type="text"
+                            class="form-control"
+                            placeholder="Ingrese direccion"
+                            maxlength="45"
+                            required="required"
+                          />
+                          <div class="invalid-feedback">
+                            Ingrese la direccion:
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                      >
+                        <i class="fas fa-ban"></i> Cancelar
+                      </button>
+                      <button class="btn btn-dark" type="submit">
+                        <i class="fas fa-save"></i> Guardar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--MODAL ELIMINAR-->
+          <div
+            id="eliminarEmpleadoModal"
+            class="modal fade"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+            data-backdrop="static"
+          >
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                  <h5 class="modal-title" id="nombreVentana">
+                    Eliminar empleado!
+                  </h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+                <div class="modal-body" id="modalMensaje">
+                  <p class="alert alert-danger">
+                    ¿Estás seguro que deseas eliminar este empleado?
+                  </p>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    <i class="fas fa-ban"></i> Cancelar
+                  </button>
+                  <a href="" id="eliminar" class="btn btn-danger" type="button"
+                    ><i class="fas fa-trash-alt"></i> Eliminar</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--MODAL MOSTRAR CONTRATOS-->
+          <div
+            id="mostrarContratosModal"
+            class="modal fade"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+            data-backdrop="static"
+          >
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header bg-darl text-white">
+                  <h5 class="modal-title" id="nombreVentana">Contratos</h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+                <div class="modal-body" id="modalMensaje">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>A. familiar</th>
+                        <th>Cargo</th>
+                        <th>F. Inicio</th>
+                        <th>F. Fin</th>
+                        <th>H. contratadas</th>
+                        <th>Valor hora</th>
+                        <th>Anulado</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyContratos"></tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    <i class="fas fa-ban"></i> Cancelar
+                  </button>
+                  <a href="" id="eliminar" class="btn btn-danger" type="button"
+                    ><i class="fas fa-trash-alt"></i> Eliminar</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer
+          th:replace="layouts/fragmentos :: footer"
+          class="main-footer"
+        ></footer>
+      </div>
+    </div>
+
+    <span th:replace="layouts/fragmentos :: js"></span>
+    <script type="text/javascript" th:src="@{/js/empleado.js}"></script>
+  </body>
+</html>

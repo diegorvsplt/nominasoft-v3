@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+  <head th:replace="layouts/fragmentos :: head"></head>
+  <script th:inline="javascript">
+    /*<![CDATA[*/
+    let empleado = /*[[${empleado}]]*/ "default";
+    let contrato = /*[[${ultimoContrato}]]*/ "default";
+    /*]]>*/
+  </script>
+
+  <body>
+    <div id="app">
+      <div class="main-wrapper">
+        <span th:replace="layouts/fragmentos :: nav-bar"></span>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <div class="card mt-4">
+            <h5
+              class="card-header"
+              style="font-size: medium; line-height: 0px; min-height: 55px"
+            >
+              Buscar empleado
+            </h5>
+            <div class="card-body" style="text-align: center">
+              <form th:action="@{empleado}" method="GET">
+                <div>
+                  <label for="dni" style="margin-right: 10px; margin-top: 5px"
+                    >Ingrese dni:
+                  </label>
+                  <input
+                    type="text"
+                    th:value="${dni}"
+                    name="dni"
+                    id="dni"
+                    style="margin-top: 5px"
+                  />
+                  <input
+                    type="submit"
+                    class="btn btn-info"
+                    value="Buscar"
+                    style="margin-left: 10px; width: 100px"
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <table class="table table-bordered">
+            <thead style="background: #343a40; color: white">
+              <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>F. Nacimiento</th>
+                <th>E. Civil</th>
+                <th>Grado academ.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${empleado != null}">
+                <td th:text="${empleado.id}"></td>
+                <td th:text="${empleado.nombre}"></td>
+                <td th:text="${empleado.direccion}"></td>
+                <td th:text="${empleado.telefono}"></td>
+                <td th:text="${empleado.fechaNacimiento}"></td>
+                <td th:text="${empleado.estadoCivil}"></td>
+                <td th:text="${empleado.gradoAcademico}"></td>
+              </tr>
+              <tr th:if="${empleado == null}">
+                <td colspan="7"><h4>No existe empleado.</h4></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="row" style="justify-content: space-evenly">
+            <button
+              id="botonCrear"
+              type="button"
+              class="boton agregarContrato"
+              style="background: #70a9a1"
+              disabled
+            >
+              <i class="fas fa-plus-square"></i> Crear contrato
+            </button>
+            <button
+              id="botonEditar"
+              type="button"
+              class="boton editarContrato"
+              style="background: #f4d35e"
+              disabled
+            >
+              <i class="fas fa-edit"></i> Editar contrato
+            </button>
+            <button
+              id="botonEliminar"
+              type="button"
+              class="boton eliminarContrato"
+              style="background: #fb4d3d"
+              disabled
+            >
+              <i class="fas fa-trash-alt"></i> Anular contrato
+            </button>
+          </div>
+        </div>
+
+        <!--MODEL AGREGAR/EDITAR CONTRATO-->
+        <div class="my-form">
+          <div
+            id="agregarContratoModal"
+            class="modal fade"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+            data-backdrop="static"
+          >
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header bg-info" id="modalHeader">
+                  <h5 class="modal-title" id="descripcionVentana"></h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form
+                  method="POST"
+                  th:action="@{/contrato/form}"
+                  th:object="${ultimoContrato}"
+                  class="needs-validation"
+                  novalidate
+                >
+                  <input type="hidden" th:field="*{id}" name="id" id="id" />
+                  <input
+                    type="hidden"
+                    th:field="*{empleado}"
+                    name="empleado_id"
+                    id="empleado_id"
+                  />
+                  <div class="modal-body" id="modalMensaje">
+                    <div class="form-row">
+                      <div class="col-6 mb-3">
+                        <label>Horas contratadas por semana: </label>
+                        <input
+                          th:field="*{horasContratadasPorSemana}"
+                          type="number"
+                          name="horasContratadasPorSemana"
+                          id="horasContratadasPorSemana"
+                          class="form-control"
+                          min="8"
+                          max="40"
+                          step="8"
+                          pattern="[0-9]"
+                          required="required"
+                        />
+                        <div class="invalid-feedback">
+                          El valor debe ser de 8 a 40 y multiplos de 8.
+                        </div>
+                      </div>
+                      <div class="col-6 mb-3">
+                        <label>Valor por hora: </label>
+                        <input
+                          th:field="*{valorHora}"
+                          type="number"
+                          name="valorHora"
+                          id="valorHora"
+                          class="form-control"
+                          min="10"
+                          max="60"
+                          pattern="[0-9]"
+                          maxlength="2"
+                          minlength="2"
+                          required="required"
+                        />
+                        <div class="invalid-feedback">
+                          El valor solo puede ser de 10 a 60 y entero.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="col-6 mb-3">
+                        <label>Fecha de inicio:</label>
+                        <input
+                          th:field="*{fechaInicio}"
+                          name="fechaInicio"
+                          id="fechaInicio"
+                          type="date"
+                          class="form-control"
+                          required="required"
+                          onchange="setFechaFin(this)"
+                        />
+                        <div class="invalid-feedback">
+                          Fecha de inicio invalida.
+                        </div>
+                      </div>
+
+                      <div class="col-6 mb-3">
+                        <label>Fecha de fin:</label>
+                        <input
+                          th:field="*{fechaFin}"
+                          name="fechaFin"
+                          id="fechaFin"
+                          type="date"
+                          class="form-control"
+                          required="required"
+                        />
+                        <div class="invalid-feedback">
+                          Fecha fin debe ser mayor a 3 meses y menor a 1 año de
+                          la fecha de inicio.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="col-6 mb-3">
+                        <label for="cargo">Afp: </label>
+                        <select
+                          th:field="*{afp}"
+                          name="afp"
+                          id="afp"
+                          class="form-control"
+                          required="required"
+                        >
+                          <option value="">-- Selecione una opción --</option>
+                          <option
+                            th:each="item: ${listaAfp}"
+                            th:value="${item.id}"
+                            th:text="${item.nombre}"
+                          ></option>
+                        </select>
+                        <div class="invalid-feedback">Valor invalido.</div>
+                      </div>
+
+                      <div class="col-6 mb-3">
+                        <label for="cargo">Cargo: </label>
+                        <select
+                          th:field="*{cargo}"
+                          name="cargo"
+                          id="cargo"
+                          class="form-control"
+                          required="required"
+                        >
+                          <option value="" selected>
+                            -- Selecione una opción --
+                          </option>
+                          <option value="Gerente general">
+                            Gerente general
+                          </option>
+                          <option value="Administrador">Administrador</option>
+                          <option value="Vigilancia">Vigilancia</option>
+                          <option value="Mantenimiento">Mantenimiento</option>
+                        </select>
+                        <div class="invalid-feedback">Valor invalido.</div>
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <div class="col-6 mb-3">
+                        <label class="mr-3">Asignacion familiar: </label>
+                        <label class="radio-inline">
+                          <input
+                            type="radio"
+                            th:field="*{asignacionFamiliar}"
+                            id="activado"
+                            name="asignacionFamiliar"
+                            value="1"
+                          />
+                          Sí.
+                        </label>
+                        <label class="radio-inline">
+                          <input
+                            type="radio"
+                            th:field="*{asignacionFamiliar}"
+                            id="desactivado"
+                            name="asignacionFamiliar"
+                            value="0"
+                          />
+                          No.
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-dismiss="modal"
+                    >
+                      <i class="fas fa-ban"></i> Cancelar
+                    </button>
+                    <button
+                      class="btn btn-dark"
+                      type="submit"
+                      onclick="guardado()"
+                    >
+                      <i class="fas fa-save"></i> Guardar
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--MODAL ELIMINAR-->
+        <div
+          id="eliminarContratoModal"
+          class="modal fade"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+          data-backdrop="static"
+        >
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="nombreVentana">
+                  Eliminar contrato!
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div class="modal-body" id="modalMensaje">
+                <h5>¿Estás seguro que deseas eliminar este contrato?</h5>
+                <table class="table table-bordered">
+                  <thead style="background: #343a40; color: white">
+                    <tr>
+                      <th>Fecha inicio</th>
+                      <th>Fecha fin</th>
+                      <th>Cargo</th>
+                      <th>Afp</th>
+                      <th>Asignacion Familiar</th>
+                      <th>Horas contratadas</th>
+                      <th>Valor hora</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:if="${ultimoContrato.id != null}">
+                      <td th:text="${ultimoContrato.fechaInicio}"></td>
+                      <td th:text="${ultimoContrato.fechaFin}"></td>
+                      <td th:text="${ultimoContrato.cargo}"></td>
+                      <td th:text="${ultimoContrato.afp.nombre}"></td>
+                      <span th:if="${ultimoContrato.asignacionFamiliar}">
+                        <td>Si</td>
+                      </span>
+                      <span th:if="${!ultimoContrato.asignacionFamiliar}">
+                        <td>No</td>
+                      </span>
+                      <td
+                        th:text="${ultimoContrato.horasContratadasPorSemana}"
+                      ></td>
+                      <td th:text="${ultimoContrato.valorHora}"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  <i class="fas fa-ban"></i> Cancelar
+                </button>
+                <a href="" id="eliminar" class="btn btn-danger" type="button"
+                  ><i class="fas fa-trash-alt"></i> Eliminar</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer
+          th:replace="layouts/fragmentos :: footer"
+          class="main-footer"
+        ></footer>
+      </div>
+    </div>
+
+    <span th:replace="layouts/fragmentos :: js"></span>
+    <script
+      type="text/javascript"
+      th:src="@{/js/gestionarContratos.js}"
+    ></script>
+  </body>
+</html>

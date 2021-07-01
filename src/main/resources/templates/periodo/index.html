@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+  <head th:replace="layouts/fragmentos :: head"></head>
+  <body>
+    <div id="app">
+      <div class="main-wrapper">
+        <span th:replace="layouts/fragmentos :: nav-bar"></span>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <div class="card mt-4">
+            <h5 class="card-header">Periodos registrados</h5>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Fecha inicio</th>
+                      <th>Fecha fin</th>
+                      <th>Estado</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <span th:if="${!listaPeriodos.isEmpty()}">
+                      <tr th:each="item: ${listaPeriodos}">
+                        <td th:text="${item.id}"></td>
+                        <td th:text="${item.fechaInicio}"></td>
+                        <td th:text="${item.fechaFin}"></td>
+                        <td th:if="${item.estado}">Activo</td>
+                        <td th:if="${!item.estado}">Procesado</td>
+                        <td style="padding-left: 0px; padding-right: 0px">
+                          <div class="button-group button-container">
+                            <a
+                              th:href="@{buscarUno/(id=${item.id})}"
+                              class="btn btn-warning botonEditar"
+                              type="button"
+                            >
+                              <i class="fas fa-user-edit"></i> Editar</a
+                            >
+                            <a
+                              th:href="@{eliminar/}+${item.id}"
+                              type="button"
+                              class="btn btn-danger botonEliminar"
+                            >
+                              <i class="fas fa-user-times"></i> Eliminar</a
+                            >
+                          </div>
+                        </td>
+                      </tr>
+                    </span>
+                    <span th:if="${listaPeriodos.isEmpty()}">
+                      <tr>
+                        <td colspan="7" class="text-center">
+                          <h5>Ningun periodo registrado</h5>
+                        </td>
+                      </tr>
+                    </span>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="text-center">
+                <a href="#" class="btn btn-info botonAgregar"
+                  ><i class="fas fa-user-plus"></i> Agregar</a
+                >
+              </div>
+            </div>
+          </div>
+
+          <!--MODEL AGREGAR/EDITAR CLIENTE-->
+          <div class="my-form">
+            <div
+              id="agregarPeriodoModal"
+              class="modal fade"
+              tabindex="-1"
+              role="dialog"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+              data-backdrop="static"
+            >
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-header bg-info text-white" id="modalHeader">
+                    <h5 class="modal-title" id="nombreVentana"></h5>
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <form
+                    method="POST"
+                    th:action="@{/periodo/form}"
+                    th:object="${periodo}"
+                    class="needs-validation"
+                    novalidate
+                  >
+                    <input type="hidden" th:field="*{idDto}" name="id" id="id" />
+                    <input type="hidden" th:field="*{estadoDto}" name="estado" id="estado" />
+                    <div class="modal-body" id="modalMensaje">
+                      <div class="form-row">
+                        <div class="col-6 mb-3">
+                          <label>Fecha de inicio:</label>
+                          <input
+                            th:field="*{fechaInicioDto}"
+                            name="fechaInicio"
+                            id="fechaInicio"
+                            type="date"
+                            class="form-control"
+                            required="required"
+                          />
+                          <div class="invalid-feedback">
+                            Fecha de inicio invalida.
+                          </div>
+                        </div>
+  
+                        <div class="col-6 mb-3">
+                          <label>Fecha de fin:</label>
+                          <input
+                            th:field="*{fechaFinDto}"
+                            name="fechaFin"
+                            id="fechaFin"
+                            type="date"
+                            class="form-control"
+                            required="required"
+                          />
+                          <div class="invalid-feedback">
+                            Fecha de inicio invalida.
+                          </div>
+                        </div>
+                      </div>
+
+                      
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal"
+                      >
+                        <i class="fas fa-ban"></i> Cancelar
+                      </button>
+                      <button class="btn btn-dark" type="submit">
+                        <i class="fas fa-save"></i> Guardar
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--MODAL ELIMINAR-->
+          <div
+            id="eliminarPeriodoModal"
+            class="modal fade"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+            data-backdrop="static"
+          >
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                  <h5 class="modal-title" id="nombreVentana">
+                    Eliminar periodo!
+                  </h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+                <div class="modal-body" id="modalMensaje">
+                  <p>
+                    ¿Estás seguro que deseas eliminar este periodo?
+                  </p>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    <i class="fas fa-ban"></i> Cancelar
+                  </button>
+                  <a href="" id="eliminar" class="btn btn-danger" type="button"
+                    ><i class="fas fa-trash-alt"></i> Eliminar</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--MODAL MOSTRAR CONTRATOS-->
+          <div
+            id="mostrarContratosModal"
+            class="modal fade"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+            data-backdrop="static"
+          >
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header bg-darl text-white">
+                  <h5 class="modal-title" id="nombreVentana">Contratos</h5>
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+                <div class="modal-body" id="modalMensaje">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>A. familiar</th>
+                        <th>Cargo</th>
+                        <th>F. Inicio</th>
+                        <th>F. Fin</th>
+                        <th>H. contratadas</th>
+                        <th>Valor hora</th>
+                        <th>Anulado</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyContratos"></tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    <i class="fas fa-ban"></i> Cancelar
+                  </button>
+                  <a href="" id="eliminar" class="btn btn-danger" type="button"
+                    ><i class="fas fa-trash-alt"></i> Eliminar</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer
+          th:replace="layouts/fragmentos :: footer"
+          class="main-footer"
+        ></footer>
+      </div>
+    </div>
+
+    <span th:replace="layouts/fragmentos :: js"></span>
+    <script type="text/javascript" th:src="@{/js/periodo.js}"></script>
+  </body>
+</html>
